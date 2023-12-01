@@ -1,0 +1,12 @@
+Following are the links I used for testing. It works great with depth = 1. But when depth = 2 it might take some time but still works great
+
+1. https://in.pinterest.com/chakravartikothadiya/places-to-go/
+2. https://www.stevens.edu/
+3. https://www.cmu.edu/
+4. https://www.dell.com/en-us/gaming/alienware?gacd=9684992-1108-5761040-266906002-0&dgc=ST&SA360CID=71700000115806278&gad_source=1&gclid=CjwKCAiAx_GqBhBQEiwAlDNAZqOtuKTDzamzJCFrkUg7ALE9L2FriRtYPfw1dWQl6jzJRhhJIyOqwhoCv0MQAvD_BwE&gclsrc=aw.ds
+5. https://www.tcgdigital.com/
+6. https://amdocs.com/
+
+
+Note:
+I am filtering images based on the keywords associated with logos and people in the image url string. So it might not be 100% accurate.

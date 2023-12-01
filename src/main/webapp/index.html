@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="home.css">
+	<title>Eulerity Take-Home Challenge</title>
+</head>
+<body>
+<h1>Welcome to the Cool Eulerity Challenge!</h1>
+<p class="description">
+	Explore the fascinating world of web crawling with our interactive web application. This project invites you to embark on a journey to crawl a provided URL, extracting and showcasing the captivating images it contains.
+</p>
+
+<div class="content">
+	<div class="input">
+		<form>
+			<label id="enter-link" for="url">Enter the link below</label>
+			<br>
+			<input class="input-enter-link" type="text" name="url" id="url">
+			<br> <!-- Add this line -->
+			<label for="depth">Enter the crawling depth  (1-2 Recommended)</label>
+			<br>
+			<input type="number" name="depth" id="depth" value="1"> <!-- Default depth is 2 -->
+		</form>
+		<button type="button" id="submitButton" onclick="toggleImages()">Submit!</button>
+		<p id="filtersText" style="display: inline-block;">Filters:</p>
+		<button type="button" id="logosButton" onclick="filterByLogos()" disabled>Logos</button>
+		<button type="button" id="peopleButton" onclick="filterByPeople()" disabled>People</button>
+		<button type="button" id="allButton" onclick="filterAll()" disabled>All</button>
+	</div>
+	<div class="output">
+		<p id="imagesText" style="display: none;">Images:</p>
+		<p id="noImagesText" style="display: none; color: #888;">No Images Found</p>
+		<ul class="results"></ul>
+	</div>
+</div>
+
+<script>
+	var resultList = document.querySelector('ul.results');
+    var urlInput = document.querySelector('input[name=url]');
+    var depthInput = document.querySelector('input[name=depth]');
+    var imagesText = document.getElementById('imagesText');
+    var filtersText = document.getElementById('filtersText');
+    var logosButton = document.getElementById('logosButton');
+    var peopleButton = document.getElementById('peopleButton');
+    var allButton = document.getElementById('allButton');
+    var originalData = []; // Variable to store the original data
+    var currentPage = 0;
+	var pageSize = 25;
+	var previousURL = null;
+	var previousDepth = 0;
+
+
+    apiCallBack = function(xhr, callback) {
+        if (xhr.readyState == XMLHttpRequest.DONE) {
+            if (xhr.status != 200) {
+                let message = xhr.status + ":" + xhr.statusText + ":"
+                        + xhr.responseText;
+                alert(message);
+                throw 'API call returned bad code: ' + xhr.status;
+            }
+            let response = xhr.responseText ? JSON.parse(xhr.responseText)
+                    : null;
+            originalData = response; // Store the original data
+            if (callback) {
+                callback(response);
+            }
+        }
+    }
+
+ updateList = function(response) {
+    resultList.innerHTML = '';
+
+    if (response.length === 0) {
+        // If no images found, display "No Images Found" text
+        noImagesText.style.display = 'block';
+    } else {
+        // If images found, hide "No Images Found" text
+        noImagesText.style.display = 'none';
+
+        for (var i = 0; i < response.length; i++) {
+            var img = document.createElement("img");
+            img.width = 200;
+            img.src = response[i];
+            resultList.appendChild(img);
+        }
+
+        // Enable the "Logos", "People" and "All" buttons and show "Filters" text after clicking "Submit"
+        filtersText.style.display = 'inline-block';
+        logosButton.disabled = false;
+        peopleButton.disabled = false;
+        allButton.disabled = false;
+
+        logosButton.classList.add('enabled');
+        peopleButton.classList.add('enabled');
+        allButton.classList.add('enabled');
+    }
+}
+
+    makeApiCall = function(url, method, obj, callback) {
+        let xhr = new XMLHttpRequest();
+        xhr.open(method, url);
+        xhr.onreadystatechange = apiCallBack.bind(null, xhr, callback);
+        xhr.send(obj ? obj instanceof FormData || obj.constructor == String ? obj : JSON.stringify(obj) : null);
+    }
+
+    isURLValid = function(string) {
+        // Regular expression to match a URL pattern
+        try{
+			new URL(string);
+        	return true;
+        } catch (error)
+        {
+        	return false;
+        }
+<!--        var urlPattern = new RegExp('^(https?:\\/\\/)?'+ // protocol-->
+<!--          '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name-->
+<!--          '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address-->
+<!--          '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path-->
+<!--          '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string-->
+<!--          '(\\#[-a-z\\d_]*)?$','i'); // fragment locator-->
+
+<!--        return urlPattern.test(string);-->
+    }
+
+    toggleImages = function() {
+        // Reset original data when changing the URL
+ 		if(previousURL===urlInput.value && originalData && previousDepth===depthInput.value)
+ 		{
+ 			//continue;
+ 			console.log("Inside togle 1st condition",previousURL, previousDepth);
+ 			resultList.innerHTML = '';
+			originalData.forEach(img => {
+				var imgElement = document.createElement("img");
+				imgElement.width = 200;
+				imgElement.src = img;
+				resultList.appendChild(imgElement);
+			});
+ 		}
+ 		else
+ 		{
+ 			console.log("Inside togle 2st condition",previousURL, previousDepth);
+ 			originalData = [];
+			// Clear displayed images
+			resultList.innerHTML = '';
+			// Disable "Logos", "People" and "All" buttons and hide "Filters" text
+			logosButton.disabled = true;
+			peopleButton.disabled = true;
+			allButton.disabled=true;
+			filtersText.style.display = 'inline-block';
+
+			if (!urlInput.value) {
+				alert('Please enter a URL');
+				return;
+			}
+
+			if (!isURLValid(urlInput.value)) {
+				alert('Please enter a valid URL ');
+				return;
+			}
+			var depth = depthInput.value;
+			var dep = String(depth);
+			previousURL = urlInput.value;
+			previousDepth = depth;
+			makeApiCall('/main?url=' + urlInput.value + '&depth=' + dep, 'POST', null, updateList);
+			imagesText.style.display = 'inline-block'; // Show the "Images" text
+ 		}
+    }
+
+	filterAll = function() {
+		if(originalData){
+			// Get the original data by keywords related to logos
+			// Display the filtered images
+			resultList.innerHTML = '';
+			originalData.forEach(img => {
+				var imgElement = document.createElement("img");
+				imgElement.width = 200;
+				imgElement.src = img;
+				resultList.appendChild(imgElement);
+			});
+		}
+	}
+
+    filterByLogos = function() {
+		 if(originalData){
+			// Filter the original data by keywords related to logos
+			var logosImages = originalData.filter(img => {
+				return img.includes('logo') || img.includes('brand');
+			});
+
+			// Display the filtered images
+			resultList.innerHTML = '';
+			logosImages.forEach(img => {
+				var imgElement = document.createElement("img");
+				imgElement.width = 200;
+				imgElement.src = img;
+				resultList.appendChild(imgElement);
+			});
+		}
+    }
+
+    filterByPeople = function() {
+        // Filter the original data by keywords related to people
+        if(originalData){
+			var peopleImages = originalData.filter(img => {
+				return img.includes('people') || img.includes('portrait') || img.includes('group') || img.includes('crowd')
+				|| img.includes('personality') || img.includes('person') || img.includes('human') || img.includes('interaction')
+				|| img.includes('expression') || img.includes('lifestyle') || img.includes('casual') || img.includes('man')
+				|| img.includes('male') || img.includes('guy') || img.includes('boy') || img.includes('gentleman') || img.includes('businessman')
+				|| img.includes('woman') || img.includes('female') || img.includes('lady') || img.includes('girl') || img.includes('employee') || img.includes('workforce')
+				|| img.includes('corporate');
+			});
+
+			// Display the filtered images
+			resultList.innerHTML = '';
+			peopleImages.forEach(img => {
+				var imgElement = document.createElement("img");
+				imgElement.width = 200;
+				imgElement.src = img;
+				resultList.appendChild(imgElement);
+			});
+        }
+    }
+</script>
+</body>
+</html>

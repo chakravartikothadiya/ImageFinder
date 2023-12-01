@@ -1,0 +1,130 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  color: #333;
+  text-align: center;
+  font-size: 2.5em;
+  margin-top: 30px;
+}
+
+.description {
+  font-size: 1.8em;
+  margin: 40px 40px; /* Added margin */
+  text-align: center;
+}
+
+#filtersText {
+  font-size: 1.5em;
+  margin: 40px 40px;
+}
+
+#imagesText {
+  font-size: 1.5em;
+  margin: 40px auto; /* Center the text horizontally */
+  text-align: center; /* Center-align the text */
+}
+
+ul {
+  list-style-type: disc;
+  padding-left: 20px;
+  font-size: 1.2em;
+  margin: 10px 20px; /* Added margin */
+}
+
+.content {
+  margin: 20px auto; /* Center the content horizontally */
+  max-width: 800px; /* Set a maximum width if needed */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.input {
+  margin-bottom: 20px;
+  width: 100%; /* Take the full width of the .content container */
+}
+
+.input form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.input input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  font-size: 1.2em;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+#submitButton {
+  padding: 10px 20px;
+  font-size: 1.2em;
+  background-color: #4caf50;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#allButton,
+#logosButton,
+#peopleButton {
+  padding: 10px 20px;
+  font-size: 1.2em;
+  background-color: #416643;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: not-allowed; /* Initially set cursor to not-allowed */
+}
+
+#allButton.enabled,
+#logosButton.enabled,
+#peopleButton.enabled {
+  background-color: #4caf50;
+  padding: 10px 20px;
+  font-size: 1.2em;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#enter-link {
+font-size: 1.2em;
+}
+
+#noImagesText {
+    font-size: 1.5em;
+    margin: 40px auto; /* Center the text horizontally */
+    text-align: center; /* Center-align the text */
+}
+
+
+.output {
+  width: 100%; /* Take the full width of the .content container */
+  text-align: center; /* Center-align the images */
+}
+
+.output img {
+  margin: 5px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.input label {
+  font-size: 1.2em;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.input-enter-label {
+  margin-top: 10px;
+}
